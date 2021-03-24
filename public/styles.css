@@ -1,0 +1,62 @@
+#mydiv {
+  position: absolute;
+  z-index: 9;
+  background-color: #f1f1f1;
+  text-align: center;
+  border: 1px solid #d3d3d3;
+}
+
+#mydivheader {
+  padding: 10px;
+  cursor: move;
+  z-index: 10;
+  background-color: #2196f3;
+  color: #fff;
+}
+
+.card {
+  background-color: green;
+  width: 150px;
+  height: 200px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+#destDiv {
+  /* height: 50%; */
+  margin: 30%;
+  margin-top: 20%;
+  display: flex;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  border: solid black;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardRow {
+  margin-left: 20%;
+  margin-right: 20%;
+  display: flex;
+  position: absolute;
+  left: 0; 
+  right: 0;
+  bottom: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.evenSlot {
+  width: 100px;
+  height: 150px;
+  background-color: red;
+}
+
+#oddRow {
+  border: solid black;
+}
+
+#evenRow {
+  border: dashed red;
+}
