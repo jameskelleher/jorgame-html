@@ -1,62 +1,77 @@
-#mydiv {
-  position: absolute;
-  z-index: 9;
-  background-color: #f1f1f1;
-  text-align: center;
-  border: 1px solid #d3d3d3;
+#opponentInfoBox {
+  border: solid black;
+  height: 225px;
+  width: 500px;
 }
 
-#mydivheader {
-  padding: 10px;
-  cursor: move;
-  z-index: 10;
-  background-color: #2196f3;
-  color: #fff;
+.oppCard {
+  /* position: relative; */
+  height: 100%;
 }
 
-.card {
-  background-color: green;
-  width: 150px;
-  height: 200px;
-  text-align: center;
+.oppDeck {
+  margin-right: 5px;
+}
+
+#opponentEvenBox {
+  border: dotted green;
+  height: 50%;
   align-items: center;
-  justify-content: center;
+  display: flex;
+  align-items: flex-start;
 }
 
-#destDiv {
+#opponentOddBox {
+  border: dotted red;
+  height: 50%;
+  bottom: 19px;
+}
+
+.inDeck {
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+#spotlightDiv {
   /* height: 50%; */
-  margin: 30%;
-  margin-top: 20%;
+  margin: 10%;
+  margin-top: 4%;
+  height: 15vw;
   display: flex;
-  position: absolute;
+  position: relative;
   top: 0; left: 0; bottom: 0; right: 0;
   border: solid black;
   align-items: center;
   justify-content: center;
 }
 
-.cardRow {
-  margin-left: 20%;
-  margin-right: 20%;
+#spotlightCenter {
+  height: 100%;
+}
+
+#cardRow {
   display: flex;
   position: absolute;
-  left: 0; 
+  left: 0;
   right: 0;
   bottom: 10px;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.evenSlot {
-  width: 100px;
   height: 150px;
-  background-color: red;
-}
-
-#oddRow {
+  align-items: center;
+  justify-content: center;
   border: solid black;
 }
 
-#evenRow {
-  border: dashed red;
+.inSpotlight {
+  margin-top: 0px;
+  height: 100%;
+}
+
+#oppPlay {
+  position: absolute;
+  right: 0px;
+}
+
+img {
+  position: relative;
+  height: 100%;
 }

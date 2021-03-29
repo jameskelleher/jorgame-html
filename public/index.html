@@ -9,34 +9,27 @@
 <body>
   <h1>Welcome to the game</h1>
 
+  <button id="oppPlay" onclick="buttonClicked()">opponent played</button>
 
-
-
-  <div id="destDiv">
+  <div id="opponentInfoBox">
+    <div id="opponentEvenBox">
+      <img src="assets/blank_card_even.png" class="oppCard oppDeck even">
+      <img src="assets/blank_card_even.png" class="oppCard oppDeck even">
+      <img src="assets/blank_card_even.png" class="oppCard oppDeck even">
+    </div>
+    <div id="opponentOddBox"></div>
   </div>
 
-  <div id="oddRow" class="cardRow">
-    <div id="oddSlot1" class="cardSlot oddSlot">
-      <div id="card_1" class="card">
-        <p>Welcome to the moving div</p>
-      </div>
-    </div>
-    <div id="oddSlot2" class="cardSlot oddSlot">
-      <div id="card_2" class="card">
-        <p>Welcome to the moving div</p>
-      </div>
-    </div>
-    <div id="oddSlot3" class="cardSlot oddSlot">
-      <div id="card_3" class="card">
-        <p>Welcome to the moving div</p>
-      </div>
-    </div>
+  <div id="spotlightDiv">
+    <div id="spotlightCenter"></div>
   </div>
 
-  <div id="evenRow" class="cardRow">
-    <div id="evenSlot1" class="cardSlot evenSlot"></div>
-    <div id="evenSlot2" class="cardSlot evenSlot"></div>
+  <div id="cardRow">
+    <img src="assets/card1.png" id="card_1" class="card inDeck">
+    <img src="assets/card1.png" id="card_2" class="card inDeck">
+    <img src="assets/card1.png" id="card_3" class="card inDeck">
   </div>
+
 
   <script src="/script.js"></script>
 </body>

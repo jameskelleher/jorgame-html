@@ -1,6 +1,7 @@
 const ANIM_DURATION = 800;
 
-const destDiv = document.getElementById("destDiv");
+const spotlightDiv = document.getElementById("spotlightCenter");
+const destRect = spotlightDiv.getBoundingClientRect();
 
 for (let card of document.getElementsByClassName("card")) {
   moveOnClick(card);
@@ -11,17 +12,19 @@ function moveOnClick(element) {
 
   function moveElement() {
 
+    element.onmousedown = null;
+
     element.classList.add("playedCard");
 
     const elemRect = element.getBoundingClientRect();
-    const destRect = destDiv.getBoundingClientRect();
 
     const xTranslate = (destRect.x - elemRect.x) + (destRect.width / 2) - (elemRect.width / 2);
     const yTranslate = (destRect.y - elemRect.y) + (destRect.height / 2) - (elemRect.height / 2);
+    const scale = destRect.height / elemRect.height;
 
     var animation = element.animate({
       transform: [
-        `translate(${xTranslate}px, ${yTranslate}px)`,
+        `translate(${xTranslate}px, ${yTranslate}px) scale(${scale})`,
       ]
     }, {
       duration: ANIM_DURATION,
@@ -29,40 +32,67 @@ function moveOnClick(element) {
     });
     animation.onfinish = resetPos
 
-    // let destSlotType;
+    const style = element.currentStyle || window.getComputedStyle(element);
+    const margin = parseInt(style.marginLeft.slice(0, -2));
+    const playedVal = element.id.split("_")[1]
 
-    // console.log(element.parentElement.id);
+    for (let card of document.getElementsByClassName("card")) {
+      if (card.classList.contains("playedCard")) {
+        continue;
+      }
 
-    // if (element.parentElement.id.startsWith("odd")) {
-    //   console.log("odd to even switch");
-    //   destSlotType = "evenSlot";
-    // } else {
-    //   console.log("even to odd switch");
-    //   destSlotType = "oddSlot";
-    // }
+      const cardVal = card.id.split("_")[1];
+      var cardXTranslate = (elemRect.width / 2) + margin;
 
-    // console.log(destSlotType);
+      if (cardVal > playedVal) {
+        cardXTranslate *= -1;
+      }
 
-    // const playedVal = element.id.split("_")[1];
-
-    // console.log(playedVal);
-
-    // for (let card of document.getElementsByClassName("card")) {
-      // if (card.classList.contains("playedCard")) {
-      //   continue;
-      // }
-
-    //   const cardVal = card.id.split("_")[1];
-
-    //   if (cardVal < playedVal) {
-    //     document.getElementById(`${destSlotType}${cardVal}`).appendChild(element);
-    //   } else {
-    //     document.getElementById(`${destSlotType}${cardVal - 1}`).appendChild(element);
-    //   }
-    // }
+      card.animate({
+        transform: [
+          `translateX(${cardXTranslate}px)`,
+        ]
+      }, {
+        duration: ANIM_DURATION,
+        easing: "ease-in-out"
+      });
+    }
   };
 
   function resetPos() {
-    destDiv.appendChild(element)
+    // spotlightDiv.appendChild(element)
+    document.getElementById("spotlightCenter").appendChild(element);
+    element.classList.remove("inDeck");
+    element.classList.add("inSpotlight");
   }
+}
+
+function buttonClicked() {
+  console.log("button clicked");
+
+  const evenCards = document.getElementsByClassName("even oppCard oppDeck");
+
+  const cardToMove = evenCards.item(evenCards.length - 1);
+
+  const ctmRect = cardToMove.getBoundingClientRect();
+
+  const xTranslate = (destRect.x - ctmRect.x) + (destRect.width / 2) - (ctmRect.width / 2);
+  const yTranslate = (destRect.y - ctmRect.y) + (destRect.height / 2) - (ctmRect.height / 2);
+
+  const scale = destRect.height / ctmRect.height;
+
+  const translateAnim = cardToMove.animate({
+    transform: `translate(${xTranslate}px, ${yTranslate}px) scale(${scale}, ${scale})`,
+  }, {
+    duration: ANIM_DURATION,
+    easing: "ease-in-out",
+  });
+
+  translateAnim.onfinish = () => {
+    spotlightDiv.appendChild(cardToMove);
+    cardToMove.classList.remove("oppDeck");
+    cardToMove.classList.add("spotlight");
+  }
+
+
 }
