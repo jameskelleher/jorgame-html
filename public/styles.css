@@ -1,11 +1,10 @@
 #opponentInfoBox {
   border: solid black;
-  height: 225px;
-  width: 500px;
+  height: 20%;
+  /* width: 500px; */
 }
 
 .oppCard {
-  /* position: relative; */
   height: 100%;
 }
 
@@ -14,29 +13,33 @@
 }
 
 #opponentEvenBox {
-  border: dotted green;
-  height: 50%;
+  /* border: dotted green; */
+  height: 49%;
+  margin-bottom: 1%;
   align-items: center;
   display: flex;
   align-items: flex-start;
 }
 
 #opponentOddBox {
-  border: dotted red;
-  height: 50%;
-  bottom: 19px;
+  /* border: dotted red; */
+  height: 49%;
+  margin-top: 1%;
+  display: flex;
+  align-items: flex-start;
 }
 
 .inDeck {
-  margin-right: 10px;
-  margin-left: 10px;
+  margin-right: 1%;
+  margin-left: 1%;
 }
 
 #spotlightDiv {
-  /* height: 50%; */
-  margin: 10%;
-  margin-top: 4%;
-  height: 15vw;
+  margin: 25%;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  height: 30%;
+  min-width: 50vw;
   display: flex;
   position: relative;
   top: 0; left: 0; bottom: 0; right: 0;
@@ -49,21 +52,13 @@
   height: 100%;
 }
 
-#spotlightLeft img {
-  right: 50%;
-}
-
-#spotlightRight img {
-  left: 50%;
-}
-
 #cardRow {
   display: flex;
-  position: absolute;
+  position: relative;
   left: 0;
   right: 0;
-  bottom: 10px;
-  height: 150px;
+  margin-bottom: 10px;
+  height: 20%;
   align-items: center;
   justify-content: center;
   border: solid black;
@@ -82,4 +77,12 @@
 img {
   position: relative;
   height: 100%;
+}
+
+#board {
+  /* border: solid blue; */
+  height: 85vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }

@@ -1,3 +1,7 @@
+// const placeholder = document.createElement("img");
+// placeholder.src = "assets/placeholder_card.png";
+// placeholder.classList.add("placeholder", "inSpotlight");
+
 const ANIM_DURATION = 800;
 
 const spotlightDiv = document.getElementById("spotlightDiv");
@@ -11,7 +15,7 @@ for (let card of document.getElementsByClassName("playerCard")) {
 }
 
 function getSpotlightDest(element) {
-  if (spotlightCenter.childElementCount === 0) {
+  if (spotlightCenter.children[0].classList.contains("placeholder")) {
     return spotlightCenter;
   } else if (element.classList.contains("playerCard")) {
     return spotlightRight;
@@ -27,16 +31,16 @@ function moveOnClick(element) {
 
     element.onmousedown = null;
 
-    
+
     const elemRect = element.getBoundingClientRect();
-    
+
     const destElem = getSpotlightDest(element);
     const destRect = destElem.getBoundingClientRect();
-    
+
     const xTranslate = (destRect.x - elemRect.x) + (destRect.width / 2) - (elemRect.width / 2);
     const yTranslate = (destRect.y - elemRect.y) + (destRect.height / 2) - (elemRect.height / 2);
     const scale = destRect.height / elemRect.height;
-    
+
     var animation = element.animate({
       transform: [
         `translate(${xTranslate}px, ${yTranslate}px) scale(${scale})`,
@@ -46,6 +50,7 @@ function moveOnClick(element) {
       easing: "ease-in-out"
     });
     animation.onfinish = () => {
+      destElem.children[0].remove();
       destElem.appendChild(element);
       element.classList.remove("inDeck");
       element.classList.add("inSpotlight");
@@ -76,8 +81,26 @@ function moveOnClick(element) {
         easing: "ease-in-out"
       });
     }
-  };
 
+    if (destElem !== spotlightCenter) {
+      const cardXTranslate = spotlightLeft.getBoundingClientRect().x - spotlightCenter.getBoundingClientRect().x;
+      const animation = spotlightCenter.children[0].animate({
+        transform: [
+          `translateX(${cardXTranslate}px)`,
+        ]
+      }, {
+        duration: ANIM_DURATION,
+        easing: "ease-in-out"
+      });
+
+      animation.onfinish = () => {
+        spotlightLeft.children[0].remove();
+        // const temp = spotlightLeft.children[0];
+        spotlightLeft.appendChild(spotlightCenter.children[0]);
+        // spotlightCenter.appendChild(temp);
+      }
+    }
+  }
 }
 
 function buttonClicked() {
@@ -105,9 +128,28 @@ function buttonClicked() {
   });
 
   translateAnim.onfinish = () => {
+    destElem.children[0].remove();
     destElem.appendChild(cardToMove);
     cardToMove.classList.remove("inOppDeck");
     cardToMove.classList.add("spotlight");
+  }
+
+  if (destElem !== spotlightCenter) {
+    const cardXTranslate = spotlightCenter.getBoundingClientRect().x - spotlightLeft.getBoundingClientRect().x;
+    const animation = spotlightCenter.children[0].animate({
+      transform: [
+        `translateX(${cardXTranslate}px)`,
+      ]
+    }, {
+      duration: ANIM_DURATION,
+      easing: "ease-in-out"
+    });
+
+    animation.onfinish = () => {
+      const temp = spotlightRight.children[0];
+      spotlightRight.appendChild(spotlightCenter.children[0]);
+      spotlightCenter.appendChild(temp);
+    }
   }
 
 
