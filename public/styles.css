@@ -9,7 +9,7 @@
   height: 100%;
 }
 
-.oppDeck {
+.inOppDeck {
   margin-right: 5px;
 }
 
@@ -36,16 +36,16 @@
   /* height: 50%; */
   margin: 10%;
   margin-top: 4%;
-  height: 15vw;
+  height: 20vw;
   display: flex;
   position: relative;
-  top: 0; left: 0; bottom: 0; right: 0;
+  /* top: 0; left: 0; bottom: 0; right: 0; */
   border: solid black;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
 }
 
-#spotlightCenter {
+#spotlightCenter, #spotlightLeft, #spotlightRight {
   height: 100%;
 }
 

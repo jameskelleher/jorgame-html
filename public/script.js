@@ -1,10 +1,22 @@
 const ANIM_DURATION = 800;
 
-const spotlightDiv = document.getElementById("spotlightCenter");
-const destRect = spotlightDiv.getBoundingClientRect();
+const spotlightDiv = document.getElementById("spotlightDiv");
+const spotlightCenter = document.getElementById("spotlightCenter");
+const spotlightLeft = document.getElementById("spotlightLeft");
+const spotlightRight = document.getElementById("spotlightRight");
 
-for (let card of document.getElementsByClassName("card")) {
+for (let card of document.getElementsByClassName("playerCard")) {
   moveOnClick(card);
+}
+
+function getSpotlightDest(element) {
+  if (spotlightCenter.childElementCount === 0) {
+    return spotlightCenter;
+  } else if (element.classList.contains("playerCard")) {
+    return spotlightRight;
+  } else {
+    return spotlightLeft;
+  }
 }
 
 function moveOnClick(element) {
@@ -14,9 +26,13 @@ function moveOnClick(element) {
 
     element.onmousedown = null;
 
-    element.classList.add("playedCard");
+    element.classList.add("inSpotlight");
+    element.classList.remove("inDeck");
 
     const elemRect = element.getBoundingClientRect();
+
+    const destElem = getSpotlightDest(element);
+    const destRect = destElem.getBoundingClientRect();
 
     const xTranslate = (destRect.x - elemRect.x) + (destRect.width / 2) - (elemRect.width / 2);
     const yTranslate = (destRect.y - elemRect.y) + (destRect.height / 2) - (elemRect.height / 2);
@@ -30,14 +46,16 @@ function moveOnClick(element) {
       duration: ANIM_DURATION,
       easing: "ease-in-out"
     });
-    animation.onfinish = resetPos
+    animation.onfinish = () => {
+      destElem.appendChild(element);
+    }
 
     const style = element.currentStyle || window.getComputedStyle(element);
     const margin = parseInt(style.marginLeft.slice(0, -2));
     const playedVal = element.id.split("_")[1]
 
-    for (let card of document.getElementsByClassName("card")) {
-      if (card.classList.contains("playedCard")) {
+    for (let card of document.getElementsByClassName("playerCard")) {
+      if (card.classList.contains("inSpotlight")) {
         continue;
       }
 
@@ -58,23 +76,22 @@ function moveOnClick(element) {
       });
     }
   };
-
-  function resetPos() {
-    // spotlightDiv.appendChild(element)
-    document.getElementById("spotlightCenter").appendChild(element);
-    element.classList.remove("inDeck");
-    element.classList.add("inSpotlight");
-  }
 }
 
 function buttonClicked() {
   console.log("button clicked");
 
-  const evenCards = document.getElementsByClassName("even oppCard oppDeck");
+  const evenCards = document.getElementsByClassName("even oppCard inOppDeck");
 
   const cardToMove = evenCards.item(evenCards.length - 1);
 
+  cardToMove.classList.remove("inOppDeck");
+  cardToMove.classList.add("inSpotlight");
+
   const ctmRect = cardToMove.getBoundingClientRect();
+
+  const destElem = getSpotlightDest(cardToMove);
+  const destRect = destElem.getBoundingClientRect();
 
   const xTranslate = (destRect.x - ctmRect.x) + (destRect.width / 2) - (ctmRect.width / 2);
   const yTranslate = (destRect.y - ctmRect.y) + (destRect.height / 2) - (ctmRect.height / 2);
@@ -89,7 +106,7 @@ function buttonClicked() {
   });
 
   translateAnim.onfinish = () => {
-    spotlightDiv.appendChild(cardToMove);
+    destElem.appendChild(cardToMove);
     cardToMove.classList.remove("oppDeck");
     cardToMove.classList.add("spotlight");
   }
