@@ -50,16 +50,29 @@
   height: 100%;
 }
 
-#cardRow {
+#command {
+  height: 20%;
+  border: solid black;
+}
+
+#messages {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 4vh;
+}
+
+#deck {
   display: flex;
   position: relative;
   left: 0;
   right: 0;
   margin-bottom: 10px;
-  height: 20%;
+  height: 65%;
   align-items: center;
   justify-content: center;
-  border: solid black;
+  border: dotted rgb(17, 163, 221);
 }
 
 .inSpotlight {

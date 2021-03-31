@@ -12,41 +12,27 @@
   <button id="oppPlay" onclick="buttonClicked()">opponent played</button>
   <div id="board">
     <div id="opponentInfoBox">
-      <div id="opponentEvenBox">
-        <img src="assets/blank_card_even.png" class="oppCard inOppDeck even">
-        <img src="assets/blank_card_even.png" class="oppCard inOppDeck even">
-        <img src="assets/blank_card_even.png" class="oppCard inOppDeck even">
-        <img src="assets/blank_card_even.png" class="oppCard inOppDeck even">
-      </div>
-      <div id="opponentOddBox">
-        <img src="assets/blank_card_odd.png" class="oppCard inOppDeck odd">
-        <img src="assets/blank_card_odd.png" class="oppCard inOppDeck odd">
-        <img src="assets/blank_card_odd.png" class="oppCard inOppDeck odd">
-        <img src="assets/blank_card_odd.png" class="oppCard inOppDeck odd">
-      </div>
+      <div id="opponentEvenBox"></div>
+      <div id="opponentOddBox"></div>
     </div>
 
     <div id="spotlightDiv">
-      <div id="spotlightLeft">
-        <!-- <img src="assets/placeholder_card.png" class="placeholder inSpotlight"> -->
-      </div>
-      <div id="spotlightCenter">
-        <!-- <img src="assets/placeholder_card.png" class="placeholder inSpotlight"> -->
-      </div>
-      <div id="spotlightRight">
-        <!-- <img src="assets/placeholder_card.png" class="placeholder inSpotlight"> -->
-      </div>
+      <div id="spotlightLeft"></div>
+      <div id="spotlightCenter"></div>
+      <div id="spotlightRight"></div>
     </div>
 
-    <div id="cardRow">
-      <img src="assets/card1.png" id="card_1" class="playerCard inDeck">
-      <img src="assets/card1.png" id="card_2" class="playerCard inDeck">
-      <img src="assets/card1.png" id="card_3" class="playerCard inDeck">
+    <div id="command">
+      <div id="deck"></div>
+      <div id="messages">
+        Welcome to the game
+      </div>
     </div>
   </div>
 
-
+  <script src="/socket.io/socket.io.js"></script>
   <script src="/script.js"></script>
+  <script src="/game.js"></script>
 </body>
 
 </html>

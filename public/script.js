@@ -1,18 +1,18 @@
-// 146.78125
-
 const ANIM_DURATION = 800;
 const ANIM_PARAMS = {
   duration: ANIM_DURATION,
-  easing: "ease-in-out"
+  easing: 'ease-in-out'
 }
 
-const spotlightDiv = document.getElementById("spotlightDiv");
-const spotlightLeft = document.getElementById("spotlightLeft");
-const spotlightCenter = document.getElementById("spotlightCenter");
-const spotlightRight = document.getElementById("spotlightRight");
+const socket = io.connect(window.location.origin);
+
+const spotlightDiv = document.getElementById('spotlightDiv');
+const spotlightLeft = document.getElementById('spotlightLeft');
+const spotlightCenter = document.getElementById('spotlightCenter');
+const spotlightRight = document.getElementById('spotlightRight');
 
 
-for (let card of document.getElementsByClassName("playerCard")) {
+for (let card of document.getElementsByClassName('playerCard')) {
   moveOnClick(card);
 }
 
@@ -29,16 +29,14 @@ function moveOnClick(element) {
 }
 
 function buttonClicked() {
-  console.log("button clicked");
-
-  const evenCards = document.getElementsByClassName("even oppCard inOppDeck");
+  const evenCards = document.getElementsByClassName('even oppCard inOppDeck');
 
   const cardToMove = evenCards.item(evenCards.length - 1);
 
   animateToSpotlight(cardToMove);
 }
 
-function animate(element, destElem, transform, classAdd = "inSpotlight", classRemove = ["inDeck", "inOppDeck"]) {
+function animate(element, destElem, transform, classAdd = 'inSpotlight', classRemove = ['inDeck', 'inOppDeck']) {
   animation = element.animate({
     transform: transform
   }, ANIM_PARAMS);
@@ -51,10 +49,9 @@ function animate(element, destElem, transform, classAdd = "inSpotlight", classRe
 }
 
 function animateToSpotlight(element) {
-  console.log(spotlightCenter.childElementCount);
   if (spotlightCenter.childElementCount === 0) {
     animateToSpotlightCenter(element);
-  } else if (element.classList.contains("playerCard")) {
+  } else if (element.classList.contains('playerCard')) {
     animateToSpotlightRight(element);
     animateToSpotlightLeft(spotlightCenter.children[0]);
   } else {
@@ -64,7 +61,6 @@ function animateToSpotlight(element) {
 }
 
 function animateToSpotlightCenter(element) {
-  console.log("to spotlight center");
   const elemRect = element.getBoundingClientRect();
   const destElem = spotlightCenter;
   const destRect = destElem.getBoundingClientRect();
@@ -117,14 +113,14 @@ function animateToSpotlightLeft(element) {
 function animateCardsInDeck(element) {
   const style = element.currentStyle || window.getComputedStyle(element);
   const margin = parseInt(style.marginLeft.slice(0, -2));
-  const playedVal = element.id.split("_")[1]
+  const playedVal = element.id.split('_')[1]
 
-  for (let card of document.getElementsByClassName("inDeck")) {
+  for (let card of document.getElementsByClassName('inDeck')) {
     if (card == element) {
       continue;
     }
 
-    const cardVal = card.id.split("_")[1];
+    const cardVal = card.id.split('_')[1];
     const cardWidth = card.getBoundingClientRect().width
     var cardXTranslate = (cardWidth / 2) + margin;
 
@@ -138,7 +134,7 @@ function animateCardsInDeck(element) {
       ]
     }, {
       duration: ANIM_DURATION,
-      easing: "ease-in-out"
+      easing: 'ease-in-out'
     });
   }
 }
