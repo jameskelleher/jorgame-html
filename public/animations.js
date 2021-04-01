@@ -4,36 +4,24 @@ const ANIM_PARAMS = {
   easing: 'ease-in-out'
 }
 
-const socket = io.connect(window.location.origin);
-
 const spotlightDiv = document.getElementById('spotlightDiv');
 const spotlightLeft = document.getElementById('spotlightLeft');
 const spotlightCenter = document.getElementById('spotlightCenter');
 const spotlightRight = document.getElementById('spotlightRight');
 
 
-for (let card of document.getElementsByClassName('playerCard')) {
-  moveOnClick(card);
+function animatePlayerMove(element) {
+  const promise1 = animateCardsInDeck(element);
+  const promise2 = animateToSpotlight(element);
+  return [...promise1, ...promise2];
 }
 
-function moveOnClick(element) {
-  element.onmousedown = moveElement;
-
-  function moveElement() {
-
-    element.onmousedown = null;
-
-    animateToSpotlight(element);
-    animateCardsInDeck(element);
-  }
-}
-
-function buttonClicked() {
-  const evenCards = document.getElementsByClassName('even oppCard inOppDeck');
+function animateOpponentMove(evenOrOdd) {
+  const evenCards = document.getElementsByClassName(`${evenOrOdd} oppCard inOppDeck`);
 
   const cardToMove = evenCards.item(evenCards.length - 1);
 
-  animateToSpotlight(cardToMove);
+  return animateToSpotlight(cardToMove);
 }
 
 function animate(element, destElem, transform, classAdd = 'inSpotlight', classRemove = ['inDeck', 'inOppDeck']) {
@@ -41,22 +29,27 @@ function animate(element, destElem, transform, classAdd = 'inSpotlight', classRe
     transform: transform
   }, ANIM_PARAMS);
 
-  animation.onfinish = () => {
+  animation.finished = animation.finished.then(() => {
     element.classList.remove(...classRemove);
     element.classList.add(classAdd);
     destElem.appendChild(element);
-  }
+  })
+
+  return animation;
 }
 
 function animateToSpotlight(element) {
   if (spotlightCenter.childElementCount === 0) {
-    animateToSpotlightCenter(element);
+    const anim1 = animateToSpotlightCenter(element);
+    return [anim1.finished];
   } else if (element.classList.contains('playerCard')) {
-    animateToSpotlightRight(element);
-    animateToSpotlightLeft(spotlightCenter.children[0]);
+    const anim1 = animateToSpotlightLeft(spotlightCenter.children[0]);
+    const anim2 = animateToSpotlightRight(element);
+    return [anim1.finished, anim2.finished];
   } else {
-    animateToSpotlightLeft(element);
-    animateToSpotlightRight(spotlightCenter.children[0]);
+    const anim1 = animateToSpotlightRight(spotlightCenter.children[0]);
+    const anim2 = animateToSpotlightLeft(element);
+    return [anim1.finished, anim2.finished];
   }
 }
 
@@ -71,7 +64,7 @@ function animateToSpotlightCenter(element) {
 
   const transform = `translate(${xTranslate}px, ${yTranslate}px) scale(${scale})`;
 
-  animate(element, destElem, transform);
+  return animate(element, destElem, transform);
 }
 
 function animateToSpotlightRight(element) {
@@ -89,7 +82,7 @@ function animateToSpotlightRight(element) {
 
   const transform = `translate(${xTranslate}px, ${yTranslate}px) scale(${scale})`;
 
-  animate(element, destElem, transform);
+  return animate(element, destElem, transform);
 }
 
 function animateToSpotlightLeft(element) {
@@ -107,13 +100,36 @@ function animateToSpotlightLeft(element) {
 
   const transform = `translate(${xTranslate}px, ${yTranslate}px) scale(${scale})`;
 
-  animate(element, destElem, transform);
+  return animate(element, destElem, transform);
+}
+
+function animateClearSpotlight() {
+  const leftAnim = animateClearSpotlightDiv(spotlightLeft);
+  const rightAnim = animateClearSpotlightDiv(spotlightRight);
+  return [leftAnim.finished, rightAnim.finished];
+}
+
+function animateClearSpotlightDiv(spotlightElem) {
+  const cardElem = spotlightElem.children[0];
+  const elemRect = cardElem.getBoundingClientRect();
+  const yTranslate = -1 * elemRect.y - elemRect.height;
+  const anim = cardElem.animate({
+    transform: `translateY(${yTranslate}px)`
+  }, ANIM_PARAMS);
+
+  anim.finished = anim.finished.then( () => {
+    cardElem.remove();
+  });
+
+  return anim;
 }
 
 function animateCardsInDeck(element) {
   const style = element.currentStyle || window.getComputedStyle(element);
   const margin = parseInt(style.marginLeft.slice(0, -2));
   const playedVal = element.id.split('_')[1]
+
+  let result = [];
 
   for (let card of document.getElementsByClassName('inDeck')) {
     if (card == element) {
@@ -128,7 +144,7 @@ function animateCardsInDeck(element) {
       cardXTranslate *= -1;
     }
 
-    card.animate({
+    const anim = card.animate({
       transform: [
         `translateX(${cardXTranslate}px)`,
       ]
@@ -136,5 +152,9 @@ function animateCardsInDeck(element) {
       duration: ANIM_DURATION,
       easing: 'ease-in-out'
     });
+
+    result.push(anim.finished);
   }
+
+  return result;
 }

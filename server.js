@@ -23,11 +23,11 @@ const players = {};
 // maps an id to an object representing the game session (i.e. game match)
 const sessions = {}
 // matchmaking queue
-const sessionQ = [];
+let sessionQ = [];
 // ids used for sessions
 let sessionId = 1;
 
-io.on('connectoin', function (socket) {
+io.on('connection', function (socket) {
   console.log(`${socket.id} joined`);
 
   players[socket.id] = {
@@ -56,6 +56,7 @@ io.on('connectoin', function (socket) {
       } else {
         // remove the session from the matchmaking queue
         // this happens when a player waiting for an opponent disconnects
+        // TODO: change this so sessionQ can be a const
         sessionQ = sessionQ.filter(session => session['id'] != playerSession['id'])
       }
     }
@@ -76,6 +77,8 @@ io.on('connectoin', function (socket) {
       isEven: null,
       nextTurn: null,
     };
+
+    console.log(cardValue);
 
     turnResult.player = socket.id;
     turnResult.isEven = (cardValue % 2) == 0;
@@ -102,7 +105,7 @@ io.on('connectoin', function (socket) {
 
     playerSession.currentTurn = turnResult.nextTurn;
 
-    playerSession.players.array.forEach(playerId => {
+    playerSession.players.forEach(playerId => {
       players[playerId].socket.emit('turnUpdate', turnResult);
     });
   });

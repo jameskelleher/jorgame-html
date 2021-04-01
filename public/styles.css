@@ -15,7 +15,7 @@
 #opponentEvenBox {
   /* border: dotted green; */
   height: 49%;
-  margin-bottom: 1%;
+  margin-bottom: 4px;
   align-items: center;
   display: flex;
   align-items: flex-start;
@@ -24,7 +24,7 @@
 #opponentOddBox {
   /* border: dotted red; */
   height: 49%;
-  margin-top: 1%;
+  margin-top: 4px;
   display: flex;
   align-items: flex-start;
 }
