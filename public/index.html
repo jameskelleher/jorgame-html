@@ -9,11 +9,20 @@
 <body>
   <h1>Welcome to the game</h1>
 
-  <button id="oppPlay" onclick="animateOpponentCard()">opponent played</button>
   <div id="board">
-    <div id="opponentInfoBox">
-      <div id="opponentEvenBox"></div>
-      <div id="opponentOddBox"></div>
+    <div id="topRow">
+      <div id="opponentInfoBox">
+        <div id="opponentEvenBox"></div>
+        <div id="opponentOddBox"></div>
+      </div>
+      <div id="vidDiv"></div>
+      <div id="scoreDiv">
+        <span>Scores:</span><br>
+        <span id="playerScore">you: 0</span><br>
+        <span id="opponentScore">them: 0</span>
+        <div></div>
+        <div></div>
+      </div>
     </div>
 
     <div id="spotlightDiv">

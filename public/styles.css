@@ -1,15 +1,32 @@
-#opponentInfoBox {
+#board {
+  /* border: solid blue; */
+  height: 85vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#topRow {
   border: solid black;
   height: 20%;
+  display: flex;
+  justify-content: space-between;
   /* width: 500px; */
 }
 
-.oppCard {
-  height: 100%;
+#opponentInfoBox {
+  width: 33.33%;
 }
 
-.inOppDeck {
-  margin-right: 5px;
+#vidDiv {
+  width: 33.33%;
+}
+
+#scoreDiv {
+  width: 33.33%;
+  font-size: 5vmin;
+  text-align: right;
+  padding-right: 10px;
 }
 
 #opponentEvenBox {
@@ -29,9 +46,12 @@
   align-items: flex-start;
 }
 
-.inDeck {
-  margin-right: 1%;
-  margin-left: 1%;
+.oppCard {
+  height: 100%;
+}
+
+.inOppDeck {
+  margin-right: 5px;
 }
 
 #spotlightDiv {
@@ -47,6 +67,11 @@
 }
 
 #spotlightCenter, #spotlightLeft, #spotlightRight {
+  height: 100%;
+}
+
+.inSpotlight {
+  margin-top: 0px;
   height: 100%;
 }
 
@@ -75,25 +100,12 @@
   border: dotted rgb(17, 163, 221);
 }
 
-.inSpotlight {
-  margin-top: 0px;
-  height: 100%;
-}
-
-#oppPlay {
-  position: absolute;
-  right: 0px;
+.inDeck {
+  margin-right: 1%;
+  margin-left: 1%;
 }
 
 img {
   position: relative;
   height: 100%;
-}
-
-#board {
-  /* border: solid blue; */
-  height: 85vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
 }

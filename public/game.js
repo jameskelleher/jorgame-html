@@ -3,14 +3,17 @@ const gameStates = {
   RESOLVING: 1,
   PLAYER_TURN: 2,
   OPPONENT_TURN: 3,
+  GAME_OVER: 4,
 }
 
 // TODO: change this
 // let currentState = gameStates.MATCHMAKING;
-let currentState = gameStates.PLAYER_TURN;
+let currentState;
 let opponentPlayed = false;
 
 let selectedCard;
+let playerScore = 0;
+let opponentScore = 0;
 
 const messageElem = document.getElementById('messages');
 
@@ -36,10 +39,33 @@ function initDeck() {
   }
 }
 
+function tearDownGame() {
+  document.getElementById('playerScore').innerText = `you: 0`;
+  document.getElementById('opponentScore').innerText = `them: 0`;
+
+  playerScore = 0;
+  opponentScore = 0;
+
+  messageElem.innerText = 'Welcome to the game';
+
+  const playerCards = document.getElementsByClassName('playerCard');
+
+  while (playerCards[0]) {
+    playerCards[0].remove();
+  }
+
+  const oppCards = document.getElementsByClassName('oppCard');
+
+  while (oppCards[0]) {
+    oppCards[0].remove();
+  }
+}
+
 function cardClick(cardElem, val) {
   if (currentState === gameStates.PLAYER_TURN) {
     selectedCard = cardElem;
     socket.emit('playCard', val);
+    currentState = gameStates.RESOLVING;
     // the actual animation / turn resolution happens in the "turnUpdate" socket.io event
   };
 }
@@ -70,20 +96,9 @@ socket.on('foundGame', data => {
 
 });
 
-socket.on('opponentDisconnect', () => {
+socket.on('opponentDisconnect', () => tearDownGame());
 
-  const playerCards = document.getElementsByClassName('playerCard');
-
-  while (playerCards[0]) {
-    playerCards[0].remove();
-  }
-
-  const oppCards = document.getElementsByClassName('oppCard');
-
-  while (oppCards[0]) {
-    oppCards[0].remove();
-  }
-});
+socket.on('disconnect', () => tearDownGame());
 
 socket.on('turnUpdate', turnResult => {
   // turnResult = {
@@ -109,11 +124,42 @@ socket.on('turnUpdate', turnResult => {
 
 async function handleTurnResult(turnResult) {
   if (turnResult.winner) {
+    let nextState;
+
+    if (turnResult.winner === socket.id) {
+      document.getElementById('playerScore').innerText = `you: ${++playerScore}`;
+      messageElem.innerText = 'You won the round!';
+      nextState = gameStates.PLAYER_TURN;
+    } else if (turnResult.winner === 'tie') {
+      messageElem.innerText = 'Tie! you played the same card';
+      nextState = turnResult.player === socket.id ? gameStates.OPPONENT_TURN : gameStates.PLAYER_TURN;
+    } else {
+      document.getElementById('opponentScore').innerText = `them: ${++opponentScore}`;
+      messageElem.innerText = 'You lost the round!';
+      nextState = gameStates.OPPONENT_TURN;
+    }
     await sleep(1000);
     const animations = animateClearSpotlight();
-    Promise.all(animations);
+    console.log(animations);
+    Promise.all(animations)
+      .then(() => currentState = nextState)
+      .then(gameOverCheck);
   } else {
-    currentState = turnResult.player == socket.id ? gameStates.OPPONENT_TURN : gameStates.PLAYER_TURN;
+    currentState = turnResult.player === socket.id ? gameStates.OPPONENT_TURN : gameStates.PLAYER_TURN;
+  }
+}
+
+function gameOverCheck() {
+  if (document.getElementsByClassName('inDeck').length > 0) return;
+
+  currentState = gameStates.GAME_OVER;
+
+  if (playerScore > opponentScore) {
+    messageElem.innerText = 'Game over - you win!';
+  } else if (playerScore < opponentScore) {
+    messageElem.innerText = 'Game over - you lost!';
+  } else {
+    messageElem.innerText = 'Game over - it was a tie!';
   }
 }
 
