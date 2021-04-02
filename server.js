@@ -69,16 +69,12 @@ io.on('connection', function (socket) {
     const playerSessionId = players[socket.id].sessionId;
     var playerSession = sessions[playerSessionId];
 
-    console.log(playerSession);
-
     const turnResult = {
       winner: null,
       player: null,
       isEven: null,
       nextTurn: null,
     };
-
-    console.log(cardValue);
 
     turnResult.player = socket.id;
     turnResult.isEven = (cardValue % 2) == 0;
@@ -116,13 +112,17 @@ io.on('connection', function (socket) {
     session_id = players[socket.id]['sessionId'];
 
     if (session_id) {
-      session = session[session_id];
+      var session = sessions[session_id];
 
       if (session.players.length == 2) {
         p0Socket = players[session.players[0]].socket;
         p1Socket = players[session.players[1]].socket;
 
-        if (players[p0Socket].rtcReady && players[p1Socket.id].rtcReady) {
+        console.log(players);
+        // console.log(p0Socket);
+        console.log(p0Socket.id);
+
+        if (players[p0Socket.id].rtcReady && players[p1Socket.id].rtcReady) {
           p0Socket.emit('connectToRtc', p1Socket.id);
           p1Socket.emit('connectToRtc', p0Socket.id);
         }
@@ -146,7 +146,7 @@ io.on('connection', function (socket) {
     socket.to(to).emit('inboundCandidate', socket.id, message);
   });
 
-  const session = sessionQ.shift();
+  var session = sessionQ.shift();
 
   if (session) {
     session.players.push(socket.id);
@@ -154,8 +154,9 @@ io.on('connection', function (socket) {
     players[socket.id].sessionId = session.id;
 
     console.log('joining session');
-    console.log(session);
-    console.log(players);
+    // console.log(session);
+    // console.log(players);
+
 
     const p0Socket = players[session.players[0]].socket;
     const p1Socket = socket;

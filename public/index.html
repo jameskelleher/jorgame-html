@@ -7,15 +7,21 @@
 </head>
 
 <body>
-  <h1>Welcome to the game</h1>
-
   <div id="board">
     <div id="topRow">
       <div id="opponentInfoBox">
-        <div id="opponentEvenBox"></div>
-        <div id="opponentOddBox"></div>
+        <div id="opponentHandText">opponent's hand</div>
+        <div id="opponentEvenBox" class="oppCardBox"></div>
+        <div id="opponentOddBox" class="oppCardBox"></div>
       </div>
-      <div id="vidDiv"></div>
+      <div id="vidDiv">
+        <div id="playerCam">
+          <!-- <video playsinline autoplay muted id="clientVideo"></video> -->
+        </div>
+        <div id="opponentCam">
+          <!-- <video playsinline autoplay muted id="peerVideo"></video> -->
+        </div>
+      </div>
       <div id="gameInfoBox">
         <div id="turnInfo">
           <span>Turn:</span><br>
@@ -43,11 +49,26 @@
         Welcome to the game
       </div>
     </div>
+    <br>
+    <div id='vidOptions'>
+      <section class="select">
+        <label for="audioSource">Audio source: </label>
+        <select id="audioSource"></select>
+      </section>
+
+      <section class="select">
+        <label for="videoSource">Video source: </label>
+        <select id="videoSource"></select>
+      </section>
+
+      <button id="enable-audio">Enable audio</button>
+    </div>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
-  <script src="/animations.js"></script>
-  <script src="/game.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/vidchat.js"></script>
 </body>
 
 </html>

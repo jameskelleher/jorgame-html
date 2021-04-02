@@ -1,6 +1,6 @@
 #board {
   /* border: solid blue; */
-  height: 85vh;
+  height: 95vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -15,15 +15,68 @@
 }
 
 #opponentInfoBox {
-  width: 33.33%;
+  width: 29.2%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#opponentHandText {
+  height: 100%;
+  font-size: 3.2vmin;
+}
+
+.oppCardBox {
+  height: 36%;
+}
+
+#opponentEvenBox {
+  /* border: dotted green; */
+  margin-bottom: 2px;
+  align-items: center;
+  display: flex;
+  align-items: flex-start;
+}
+
+#opponentOddBox {
+  /* border: dotted red; */
+  margin-top: 2px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.oppCard {
+  height: 100%;
+}
+
+.inOppDeck {
+  margin-right: 5px;
 }
 
 #vidDiv {
-  width: 33.33%;
+  width: 40%;
+  display: flex;
+}
+
+#playerCam {
+  width: 50%;
+  padding-right: 4px;
+  display: flex;
+  align-items: flex-end;
+  flex-direction: row-reverse;
+}
+
+#opponentCam {
+  width: 50%;
+  padding-left: 4px;
+}
+
+video {
+  height: 100%;
 }
 
 #gameInfoBox {
-  width: 33.33%;
+  width: 30%;
   display: flex;
 }
 
@@ -41,31 +94,6 @@
   padding-right: 10px;
 }
 
-#opponentEvenBox {
-  /* border: dotted green; */
-  height: 49%;
-  margin-bottom: 4px;
-  align-items: center;
-  display: flex;
-  align-items: flex-start;
-}
-
-#opponentOddBox {
-  /* border: dotted red; */
-  height: 49%;
-  margin-top: 4px;
-  display: flex;
-  align-items: flex-start;
-}
-
-.oppCard {
-  height: 100%;
-}
-
-.inOppDeck {
-  margin-right: 5px;
-}
-
 #spotlightDiv {
   margin: 25%;
   margin-top: 5%;
@@ -73,7 +101,7 @@
   height: 30%;
   display: flex;
   position: relative;
-  border: solid black;
+  /* border: solid black; */
   align-items: center;
   justify-content: space-between;
 }
@@ -89,7 +117,7 @@
 
 #command {
   height: 20%;
-  border: solid black;
+  /* border: solid black; */
 }
 
 #messages {
@@ -109,7 +137,7 @@
   height: 65%;
   align-items: center;
   justify-content: center;
-  border: dotted rgb(17, 163, 221);
+  /* border: dotted rgb(17, 163, 221); */
 }
 
 .inDeck {
@@ -120,4 +148,8 @@
 img {
   position: relative;
   height: 100%;
+}
+
+#vidOptions {
+  text-align: center;
 }
