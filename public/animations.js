@@ -105,7 +105,6 @@ function animateToSpotlightLeft(element) {
 
 function animateClearSpotlight() {
   const leftAnim = animateClearSpotlightDiv(spotlightLeft);
-  console.log(leftAnim.finished);
   const rightAnim = animateClearSpotlightDiv(spotlightRight);
   return [leftAnim.finished, rightAnim.finished];
 }
@@ -121,8 +120,6 @@ function animateClearSpotlightDiv(spotlightElem) {
   anim.finished = anim.finished.then( () => {
     cardElem.remove();
   });
-
-  console.log(anim.finished);
 
   return anim;
 }

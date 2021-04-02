@@ -7,8 +7,7 @@ const gameStates = {
 }
 
 // TODO: change this
-// let currentState = gameStates.MATCHMAKING;
-let currentState;
+let currentState = gameStates.MATCHMAKING;
 let opponentPlayed = false;
 
 let selectedCard;
@@ -16,6 +15,7 @@ let playerScore = 0;
 let opponentScore = 0;
 
 const messageElem = document.getElementById('messages');
+const turnElem = document.getElementById('currentTurn');
 
 const socket = io.connect(window.location.origin);
 
@@ -59,13 +59,15 @@ function tearDownGame() {
   while (oppCards[0]) {
     oppCards[0].remove();
   }
+
+  setCurrentState(gameStates.MATCHMAKING);
 }
 
 function cardClick(cardElem, val) {
   if (currentState === gameStates.PLAYER_TURN) {
     selectedCard = cardElem;
     socket.emit('playCard', val);
-    currentState = gameStates.RESOLVING;
+    setCurrentState(gameStates.RESOLVING);
     // the actual animation / turn resolution happens in the "turnUpdate" socket.io event
   };
 }
@@ -92,7 +94,8 @@ function initOppDeck() {
 socket.on('foundGame', data => {
   initGame();
 
-  currentState = data.myTurn === 0 ? gameStates.PLAYER_TURN : gameStates.OPPONENT_TURN;
+  const nextState = data.myTurn === 0 ? gameStates.PLAYER_TURN : gameStates.OPPONENT_TURN;
+  setCurrentState(nextState);
 
 });
 
@@ -140,19 +143,19 @@ async function handleTurnResult(turnResult) {
     }
     await sleep(1000);
     const animations = animateClearSpotlight();
-    console.log(animations);
     Promise.all(animations)
-      .then(() => currentState = nextState)
+      .then(() => setCurrentState(nextState))
       .then(gameOverCheck);
   } else {
-    currentState = turnResult.player === socket.id ? gameStates.OPPONENT_TURN : gameStates.PLAYER_TURN;
+    const nextGameState = turnResult.player === socket.id ? gameStates.OPPONENT_TURN : gameStates.PLAYER_TURN;
+    setCurrentState(nextGameState);
   }
 }
 
 function gameOverCheck() {
   if (document.getElementsByClassName('inDeck').length > 0) return;
 
-  currentState = gameStates.GAME_OVER;
+  setCurrentState(gameStates.GAME_OVER);
 
   if (playerScore > opponentScore) {
     messageElem.innerText = 'Game over - you win!';
@@ -161,6 +164,18 @@ function gameOverCheck() {
   } else {
     messageElem.innerText = 'Game over - it was a tie!';
   }
+}
+
+function setCurrentState(gameState) {
+  if (gameState === gameStates.PLAYER_TURN) {
+    turnElem.innerText = 'you';
+  } else if (gameState === gameStates.OPPONENT_TURN) {
+    turnElem.innerText = 'them';
+  } else if (gameState === gameStates.GAME_OVER) {
+    turnElem.innerText = 'game over!';
+  }
+
+  currentState = gameState;
 }
 
 function sleep(ms) {

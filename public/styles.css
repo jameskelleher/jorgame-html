@@ -7,7 +7,7 @@
 }
 
 #topRow {
-  border: solid black;
+  /* border: solid black; */
   height: 20%;
   display: flex;
   justify-content: space-between;
@@ -22,9 +22,21 @@
   width: 33.33%;
 }
 
-#scoreDiv {
+#gameInfoBox {
   width: 33.33%;
-  font-size: 5vmin;
+  display: flex;
+}
+
+#turnInfo {
+  width: 58%;
+  font-size: 4vmin;
+  text-align: right;
+  padding-right: 10px;
+}
+
+#scoreInfo {
+  width: 42%;
+  font-size: 4vmin;
   text-align: right;
   padding-right: 10px;
 }
@@ -101,8 +113,8 @@
 }
 
 .inDeck {
-  margin-right: 1%;
-  margin-left: 1%;
+  margin-right: 2px;
+  margin-left: 2px;
 }
 
 img {
