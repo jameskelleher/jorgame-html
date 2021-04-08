@@ -14,13 +14,35 @@ const rtcConfig = {
     ]
 };
 
-// const clientVideoElement = document.querySelector("video#clientVideo");
-const clientVideoElement = createClientVideoElement();
-// const peerVideoElement = document.querySelector("video#peerVideo");
-const peerVideoElement = createPeerVideoElement();
-const enableAudioButton = document.getElementById('enable-audio');
+let clientVideoElement, peerVideoElement,  audioSelect, videoSelect;
 
-enableAudioButton.addEventListener("click", enableAudio);
+let vidChatInitialized = false;
+
+function initVidChat() {
+    if (vidChatInitialized) return;
+
+    vidChatInitialized = true;
+
+    addVidOptionsToDOM();
+
+    clientVideoElement = createClientVideoElement();
+    peerVideoElement = createPeerVideoElement();
+
+    const enableAudioButton = document.getElementById('enable-audio');
+
+    enableAudioButton.addEventListener("click", enableAudio);
+
+    // Get camera and microphone
+    audioSelect = document.querySelector("select#audioSource");
+    videoSelect = document.querySelector("select#videoSource");
+
+    audioSelect.onchange = getStream;
+    videoSelect.onchange = getStream;
+
+    getStream()
+        .then(getDevices)
+        .then(gotDevices);
+}
 
 function createVideoElement() {
     const vid = document.createElement('video');
@@ -84,8 +106,8 @@ socket.on("offer", (id, description) => {
         .then(() => inboundPeerConnection.createAnswer())
         .then(sdp => inboundPeerConnection.setLocalDescription(sdp))
         .then(() => {
-        socket.emit("answer", id, inboundPeerConnection.localDescription);
-    });
+            socket.emit("answer", id, inboundPeerConnection.localDescription);
+        });
 
     inboundPeerConnection.ontrack = event => {
         peerVideoElement.srcObject = event.streams[0];
@@ -110,16 +132,6 @@ socket.on("outboundCandidate", (id, candidate) => {
         .catch(e => console.log(e));
 });
 
-// Get camera and microphone
-const audioSelect = document.querySelector("select#audioSource");
-const videoSelect = document.querySelector("select#videoSource");
-
-audioSelect.onchange = getStream;
-videoSelect.onchange = getStream;
-
-getStream()
-    .then(getDevices)
-    .then(gotDevices);
 
 function getDevices() {
     return navigator.mediaDevices.enumerateDevices();
@@ -181,5 +193,44 @@ function handleError(error) {
     console.error("Error: ", error);
 }
 
+function addVidOptionsToDOM() {
+    const audioSourceSection = document.createElement('section');
+    audioSourceSection.classList.add('select');
+
+    const audioSourceLabel = document.createElement('label');
+    audioSourceLabel.for = 'audioSource';
+    audioSourceLabel.innerText = 'Audio source: ';
+
+    const audioSourceSelect = document.createElement('select');
+    audioSourceSelect.id = 'audioSource';
+
+    audioSourceSection.appendChild(audioSourceLabel);
+    audioSourceSection.appendChild(audioSourceSelect);
+
+
+    const videoSourceSection = document.createElement('section');
+    videoSourceSection.classList.add('select');
+
+    const videoSourceLabel = document.createElement('label');
+    videoSourceLabel.for = 'videoSource';
+    videoSourceLabel.innerText = 'Video source: ';
+
+    const videoSourceSelect = document.createElement('select');
+    videoSourceSelect.id = 'videoSource';
+
+    videoSourceSection.appendChild(videoSourceLabel);
+    videoSourceSection.appendChild(videoSourceSelect);
+
+
+    const enableAudioButton = document.createElement('button');
+    enableAudioButton.id = 'enable-audio';
+    enableAudioButton.innerText = 'Enable Audio';
+
+
+    const vidOptionsDiv = document.getElementById('vidOptions');
+    vidOptionsDiv.appendChild(audioSourceSection);
+    vidOptionsDiv.appendChild(videoSourceSection);
+    vidOptionsDiv.appendChild(enableAudioButton);
+}
 
 

@@ -108,6 +108,8 @@ socket.on('opponentDisconnect', () => tearDownGame());
 
 socket.on('disconnect', () => tearDownGame());
 
+socket.on('initVidChat', () => initVidChat());
+
 socket.on('turnUpdate', turnResult => {
   // turnResult = {
   //   winner: winner's socket id, or "tie", or null if round not over yet

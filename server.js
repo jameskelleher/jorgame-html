@@ -75,6 +75,7 @@ io.on('connection', function (socket) {
         // this happens when a player waiting for an opponent disconnects
         // TODO: change this so sessionQ can be a const
         sessionQ = sessionQ.filter(session => session['id'] != playerSession['id'])
+        delete sessions[playerSessionId];
       }
     }
 
@@ -135,10 +136,6 @@ io.on('connection', function (socket) {
         p0Socket = players[session.players[0]].socket;
         p1Socket = players[session.players[1]].socket;
 
-        console.log(players);
-        // console.log(p0Socket);
-        console.log(p0Socket.id);
-
         if (players[p0Socket.id].rtcReady && players[p1Socket.id].rtcReady) {
           p0Socket.emit('connectToRtc', p1Socket.id);
           p1Socket.emit('connectToRtc', p0Socket.id);
@@ -167,12 +164,16 @@ io.on('connection', function (socket) {
 function addToPublicSession(socket) {
   var session = sessionQ.shift();
 
+  console.log(session);
+
   if (session) {
     addPlayerToSession(socket.id, session);
     startGame(session);
-
   } else {
-    initNewSession(socket, public = true);
+    const newSessionId = uuidv4();
+    const newSession = initNewSession(socket, newSessionId, public = true);
+    console.log(`pushing session ${newSession.id} to the public session queue`);
+    pushSessionToQueue(newSession);
   }
 }
 
@@ -184,6 +185,7 @@ function addToPrivateSession(socket, sessionId) {
       return;
     } else {
       addPlayerToSession(socket.id, session);
+      initVidChat(session);
       startGame(session);
     }
   } else {
@@ -191,18 +193,21 @@ function addToPrivateSession(socket, sessionId) {
   }
 }
 
+function initVidChat(session) {
+  players[session.players[0]].socket.emit('initVidChat');
+  players[session.players[1]].socket.emit('initVidChat');
+}
+
 function initNewSession(socket, newSessionId = null, public = false) {
+  console.log(public);
+  console.log(newSessionId);
   const newSession = createSession(newSessionId);
   addPlayerToSession(socket.id, newSession);
-  console.log(newSession);
-  if (public) {
-    pushSessionToQueue(newSession);
-  }
+
+  return newSession
 }
 
 function createSession(newSessionId) {
-  if (!newSessionId) newSessionId = uuidv4();
-
   const newSession = {
     id: newSessionId,
     players: [],
@@ -216,7 +221,6 @@ function createSession(newSessionId) {
 }
 
 function addPlayerToSession(socketId, session) {
-  console.log(session);
   session.players.push(socketId);
   players[socketId].sessionId = session.id;
 }
