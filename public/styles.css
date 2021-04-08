@@ -82,14 +82,14 @@ video {
 
 #turnInfo {
   width: 58%;
-  font-size: 4vmin;
+  font-size: 3.5vmin;
   text-align: right;
   padding-right: 10px;
 }
 
 #scoreInfo {
   width: 42%;
-  font-size: 4vmin;
+  font-size: 3.5vmin;
   text-align: right;
   padding-right: 10px;
 }

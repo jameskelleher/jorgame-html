@@ -4,9 +4,12 @@ const app = express();
 const port = 4000;
 
 const http = require('http');
+const { start } = require('repl');
 const server = http.createServer(app);
 
 const io = require('socket.io')(server);
+
+const { v4: uuidv4 } = require('uuid');
 
 app.use(express.static(__dirname + '/public'));
 
@@ -14,8 +17,16 @@ app.get('/', function (req, res) {
   res.sendFile('public/index.html', { root: __dirname });
 });
 
+app.get('/public', function (req, res) {
+  res.sendFile('public/game.html', { root: __dirname })
+})
+
+app.get('/private', function (req, res) {
+  res.sendFile('public/game.html', { root: __dirname })
+})
+
 app.get('/:id', function (req, res) {
-  res.sendFile('public/index.html', { root: __dirname });
+  res.sendFile('public/game.html', { root: __dirname });
 })
 
 // maps a socket id to an object representing a player
@@ -24,8 +35,6 @@ const players = {};
 const sessions = {}
 // matchmaking queue
 let sessionQ = [];
-// ids used for sessions
-let sessionId = 1;
 
 io.on('connection', function (socket) {
   console.log(`${socket.id} joined`);
@@ -35,6 +44,14 @@ io.on('connection', function (socket) {
     sessionId: null,
     rtcReady: false,
   }
+
+  socket.on('joinGame', loc => {
+    if (loc === 'public') {
+      addToPublicSession(socket)
+    } else {
+      addToPrivateSession(socket, loc);
+    }
+  });
 
   socket.on('disconnect', function () {
     console.log(`${socket.id} disconnected`);
@@ -145,47 +162,81 @@ io.on('connection', function (socket) {
   socket.on('inboundCandidate', (to, message) => {
     socket.to(to).emit('inboundCandidate', socket.id, message);
   });
+});
 
+function addToPublicSession(socket) {
   var session = sessionQ.shift();
 
   if (session) {
-    session.players.push(socket.id);
-
-    players[socket.id].sessionId = session.id;
-
-    console.log('joining session');
-    // console.log(session);
-    // console.log(players);
-
-
-    const p0Socket = players[session.players[0]].socket;
-    const p1Socket = socket;
-
-    p0Socket.emit('foundGame', { myTurn: 0 });
-    p1Socket.emit('foundGame', { myTurn: 1 });
-
-    if (players[p0Socket.id].rtcReady && players[p1Socket.id].rtcReady) {
-      p0Socket.emit('connectToRtc', p1Socket.id);
-      p1Socket.emit('connectToRtc', p0Socket.id);
-    }
+    addPlayerToSession(socket.id, session);
+    startGame(session);
 
   } else {
-    const playerSessionId = sessionId++;
-
-    const session = {
-      id: playerSessionId,
-      players: [socket.id],
-      lastPlayed: null,
-      currentTurn: 0,
-    };
-
-    players[socket.id].sessionId = playerSessionId;
-
-    sessions[playerSessionId] = session;
-
-    sessionQ.push(session);
+    initNewSession(socket, public = true);
   }
-});
+}
+
+function addToPrivateSession(socket, sessionId) {
+  if (sessionId in sessions) {
+    const session = sessions[sessionId];
+    if (session.players.length === 2) {
+      socket.emit('sessionFull');
+      return;
+    } else {
+      addPlayerToSession(socket.id, session);
+      startGame(session);
+    }
+  } else {
+    initNewSession(socket, sessionId);
+  }
+}
+
+function initNewSession(socket, newSessionId = null, public = false) {
+  const newSession = createSession(newSessionId);
+  addPlayerToSession(socket.id, newSession);
+  console.log(newSession);
+  if (public) {
+    pushSessionToQueue(newSession);
+  }
+}
+
+function createSession(newSessionId) {
+  if (!newSessionId) newSessionId = uuidv4();
+
+  const newSession = {
+    id: newSessionId,
+    players: [],
+    lastPlayed: null,
+    currentTurn: 0,
+  };
+
+  sessions[newSessionId] = newSession;
+
+  return newSession;
+}
+
+function addPlayerToSession(socketId, session) {
+  console.log(session);
+  session.players.push(socketId);
+  players[socketId].sessionId = session.id;
+}
+
+function pushSessionToQueue(session) {
+  sessionQ.push(session);
+}
+
+function startGame(session) {
+  const p0Socket = players[session.players[0]].socket;
+  const p1Socket = players[session.players[1]].socket;
+
+  p0Socket.emit('foundGame', { myTurn: 0 });
+  p1Socket.emit('foundGame', { myTurn: 1 });
+
+  if (players[p0Socket.id].rtcReady && players[p1Socket.id].rtcReady) {
+    p0Socket.emit('connectToRtc', p1Socket.id);
+    p1Socket.emit('connectToRtc', p0Socket.id);
+  }
+}
 
 server.listen(process.env.PORT || port, () => {
   console.log(`Server is running on port ${port}`)

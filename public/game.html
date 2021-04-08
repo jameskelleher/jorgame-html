@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <link href="/styles.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div id="board">
+    <div id="topRow">
+      <div id="opponentInfoBox">
+        <div id="opponentHandText">opponent's hand</div>
+        <div id="opponentEvenBox" class="oppCardBox"></div>
+        <div id="opponentOddBox" class="oppCardBox"></div>
+      </div>
+      <div id="vidDiv">
+        <div id="playerCam"></div>
+        <div id="opponentCam"></div>
+      </div>
+      <div id="gameInfoBox">
+        <div id="turnInfo">
+          <span>Turn:</span><br>
+          <span id="currentTurn"></span><br><br>
+        </div>
+        <div id="scoreInfo">
+          <span>Scores:</span><br>
+          <span id="playerScore">you: 0</span><br>
+          <span id="opponentScore">them: 0</span>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="spotlightDiv">
+      <div id="spotlightLeft"></div>
+      <div id="spotlightCenter"></div>
+      <div id="spotlightRight"></div>
+    </div>
+
+    <div id="command">
+      <div id="deck"></div>
+      <div id="messages">
+        Welcome to the game
+      </div>
+    </div>
+    <br>
+    <div id='vidOptions'>
+      <section class="select">
+        <label for="audioSource">Audio source: </label>
+        <select id="audioSource"></select>
+      </section>
+
+      <section class="select">
+        <label for="videoSource">Video source: </label>
+        <select id="videoSource"></select>
+      </section>
+
+      <button id="enable-audio">Enable audio</button>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/game.js"></script>
+  <!-- <script src="js/vidchat.js"></script> -->
+  <script>
+    if (window.location.pathname === '/private') {
+      document.write('<script src="js/vidchat.js"><\/script>');
+    }
+  </script>
+</body>
+
+</html>

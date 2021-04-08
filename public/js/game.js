@@ -91,6 +91,11 @@ function initOppDeck() {
   }
 }
 
+socket.on('connect', () => {
+  const loc = window.location.href.split('/').pop();
+  socket.emit('joinGame', loc);
+});
+
 socket.on('foundGame', data => {
   initGame();
 
