@@ -110,6 +110,11 @@ socket.on('disconnect', () => tearDownGame());
 
 socket.on('initVidChat', () => initVidChat());
 
+socket.on('sessionFull', () => {
+  const sessionName = window.location.href.split('/').pop();
+  messageElem.innerText = `Game session with name "${sessionName}" is currently full - please try again later!`;
+});
+
 socket.on('turnUpdate', turnResult => {
   // turnResult = {
   //   winner: winner's socket id, or "tie", or null if round not over yet
