@@ -87,6 +87,7 @@ socket.on("connectToRtc", (id, rtcConfig) => {
 });
 
 socket.on("offer", (id, description, rtcConfig) => {
+    console.log('offer');
     inboundPeerConnection = new RTCPeerConnection(rtcConfig);
     inboundPeerConnection
         .setRemoteDescription(description)
@@ -108,6 +109,7 @@ socket.on("offer", (id, description, rtcConfig) => {
 });
 
 socket.on("inboundCandidate", (id, candidate) => {
+    console.log('inboundCandidate');
     inboundPeerConnection
         .addIceCandidate(new RTCIceCandidate(candidate))
         .catch(e => console.log(e));
