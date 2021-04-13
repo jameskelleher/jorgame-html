@@ -11,6 +11,8 @@ const io = require('socket.io')(server);
 
 const { v4: uuidv4 } = require('uuid');
 
+const axios = require('axios');
+
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function (req, res) {
@@ -35,6 +37,41 @@ const players = {};
 const sessions = {}
 // matchmaking queue
 let sessionQ = [];
+
+class RtcConfigHandler {
+  constructor() {
+    this.updated = null;
+    this.timeoutSec = 60;
+    this.latestRtcConfig = null;
+  }
+
+  get rtcConfigPromise() {
+    if (!this.latestRtcConfig || (Date.now() - this.updated) / 1000 > this.timeoutSec - 5) {
+      return this.updateRtcConfig();
+    } else {
+      return new Promise((res, rej) => res(this.latestRtcConfig));
+    }
+  }
+
+  updateRtcConfig() {
+    const env = process.env;
+    return axios({
+      method: 'put',
+      url: `https://${env.XIRSYS_USERNAME}:${env.XIRSYS_SECRET}@global.xirsys.net/_turn/${env.XIRSYS_APP_NAME}`,
+      headers: { 'Content-type': 'application/json' },
+      data: { format: 'urls', expire: "60" }
+    }).then(res => {
+      console.log('updated rtcConfig');
+      this.updated = Date.now();
+      this.latestRtcConfig = { iceServers: [res.data.v.iceServers] } // res.data.v;
+      return this.latestRtcConfig;
+    }).catch(error => {
+      console.log(error)
+    })
+  }
+}
+
+const rtcConfigHandler = new RtcConfigHandler();
 
 io.on('connection', function (socket) {
   console.log(`${socket.id} joined`);
@@ -137,15 +174,19 @@ io.on('connection', function (socket) {
         p1Socket = players[session.players[1]].socket;
 
         if (players[p0Socket.id].rtcReady && players[p1Socket.id].rtcReady) {
-          p0Socket.emit('connectToRtc', p1Socket.id);
-          p1Socket.emit('connectToRtc', p0Socket.id);
+          rtcConfigHandler.rtcConfigPromise.then(rtcConfig => {
+            p0Socket.emit('connectToRtc', p1Socket.id, rtcConfig);
+            p1Socket.emit('connectToRtc', p0Socket.id, rtcConfig);
+          })
         }
       }
     }
   });
 
   socket.on('offer', (to, message) => {
-    socket.to(to).emit('offer', socket.id, message);
+    rtcConfigHandler.rtcConfigPromise.then(config => {
+      socket.to(to).emit('offer', socket.id, message, config);
+    })
   });
 
   socket.on('answer', (to, message) => {
@@ -199,8 +240,6 @@ function initVidChat(session) {
 }
 
 function initNewSession(socket, newSessionId = null, public = false) {
-  console.log(public);
-  console.log(newSessionId);
   const newSession = createSession(newSessionId);
   addPlayerToSession(socket.id, newSession);
 
@@ -237,8 +276,10 @@ function startGame(session) {
   p1Socket.emit('foundGame', { myTurn: 1 });
 
   if (players[p0Socket.id].rtcReady && players[p1Socket.id].rtcReady) {
-    p0Socket.emit('connectToRtc', p1Socket.id);
-    p1Socket.emit('connectToRtc', p0Socket.id);
+    rtcConfigHandler.rtcConfigPromise.then(rtcConfig => {
+      p0Socket.emit('connectToRtc', p1Socket.id, rtcConfig);
+      p1Socket.emit('connectToRtc', p0Socket.id, rtcConfig);
+    })
   }
 }
 

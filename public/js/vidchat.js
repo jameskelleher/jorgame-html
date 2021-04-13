@@ -1,20 +1,7 @@
 let inboundPeerConnection;
 let outboundPeerConnection;
 
-const rtcConfig = {
-    iceServers: [
-        {
-            "urls": "stun:stun.l.google.com:19302",
-        },
-        // { 
-        //   "urls": "turn:TURN_IP?transport=tcp",
-        //   "username": "TURN_USERNAME",
-        //   "credential": "TURN_CREDENTIALS"
-        // }
-    ]
-};
-
-let clientVideoElement, peerVideoElement,  audioSelect, videoSelect;
+let clientVideoElement, peerVideoElement, audioSelect, videoSelect;
 
 let vidChatInitialized = false;
 
@@ -77,7 +64,7 @@ socket.on("answer", (id, description) => {
     outboundPeerConnection.setRemoteDescription(description);
 });
 
-socket.on("connectToRtc", id => {
+socket.on("connectToRtc", (id, rtcConfig) => {
     outboundPeerConnection = new RTCPeerConnection(rtcConfig);
 
     let stream = clientVideoElement.srcObject;
@@ -99,7 +86,7 @@ socket.on("connectToRtc", id => {
         });
 });
 
-socket.on("offer", (id, description) => {
+socket.on("offer", (id, description, rtcConfig) => {
     inboundPeerConnection = new RTCPeerConnection(rtcConfig);
     inboundPeerConnection
         .setRemoteDescription(description)
