@@ -13,6 +13,9 @@ const { v4: uuidv4 } = require('uuid');
 
 const axios = require('axios');
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function (req, res) {
@@ -221,7 +224,6 @@ function addToPublicSession(socket) {
 function addToPrivateSession(socket, sessionId) {
   if (sessionId in sessions) {
     const session = sessions[sessionId];
-    console.log(session)
     if (session.players.length === 2) {
       socket.emit('sessionFull');
       return;
