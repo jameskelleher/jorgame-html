@@ -109,17 +109,7 @@ socket.on("offer", (id, description, rtcConfig) => {
 });
 
 socket.on("inboundCandidate", (id, candidate) => {
-    console.log(candidate);
-    try {
-        console.log('inboundCandidate');
-        inboundPeerConnection
-            .addIceCandidate(new RTCIceCandidate(candidate))
-            .catch(e => console.log(e));
-
-        console.log('successfully updated inbound candidate');
-    } catch {
-        console.log('failed to update inbound candidate');
-    }
+    updateInboundPeerConnection(candidate);
 });
 
 socket.on("outboundCandidate", (id, candidate) => {
@@ -187,6 +177,21 @@ function enableAudio() {
 
 function handleError(error) {
     console.error("Error: ", error);
+}
+
+function updateInboundPeerConnection(candidate, attempts=5, timeout=2000) {
+    if (attempts === 0) {
+        console.log('failed to add inbound candidate');
+    }
+    try {
+        console.log('inboundCandidate');
+        inboundPeerConnection
+            .addIceCandidate(new RTCIceCandidate(candidate))
+            .catch(e => console.log(e));
+        console.log('successfully added inbound candidate');
+    } catch {
+        setTimeout(() => updateInboundPeerConnection(candidat, attempts-1), timeout);
+    }
 }
 
 function addVidOptionsToDOM() {
