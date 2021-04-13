@@ -137,7 +137,7 @@ io.on('connection', function (socket) {
     turnResult.player = socket.id;
     turnResult.isEven = (cardValue % 2) == 0;
 
-    if (!playerSession.lastPlayed) {
+    if (playerSession.lastPlayed === null) {
       // first turn in the round has been played
       turnResult.nextTurn = (playerSession.currentTurn + 1) % 2;
       playerSession.lastPlayed = cardValue;

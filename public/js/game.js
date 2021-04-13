@@ -27,7 +27,7 @@ function initGame() {
 function initDeck() {
   const deckElem = document.getElementById('deck');
 
-  for (let i = 1; i <= 8; i++) {
+  for (let i = 0; i <= 8; i++) {
     const cardElem = document.createElement('img');
     cardElem.src = `assets/card${i}.png`;
     cardElem.id = `card_${i}`;
@@ -76,7 +76,7 @@ function initOppDeck() {
   const oppDeckEvenElem = document.getElementById('opponentEvenBox');
   const oppDeckOddElem = document.getElementById('opponentOddBox');
 
-  for (var _ = 0; _ < 4; _++) {
+  for (var _ = 0; _ < 5; _++) {
     const evenCardElem = document.createElement('img');
     evenCardElem.src = 'assets/blank_card_even.png';
     evenCardElem.classList.add('oppCard', 'inOppDeck', 'even');
