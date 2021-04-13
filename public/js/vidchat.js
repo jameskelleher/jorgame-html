@@ -184,13 +184,12 @@ function updateInboundPeerConnection(candidate, attempts=5, timeout=2000) {
         console.log('failed to add inbound candidate');
     }
     try {
-        console.log('inboundCandidate');
         inboundPeerConnection
             .addIceCandidate(new RTCIceCandidate(candidate))
             .catch(e => console.log(e));
         console.log('successfully added inbound candidate');
     } catch {
-        setTimeout(() => updateInboundPeerConnection(candidat, attempts-1), timeout);
+        setTimeout(() => updateInboundPeerConnection(candidate, attempts-1), timeout);
     }
 }
 
