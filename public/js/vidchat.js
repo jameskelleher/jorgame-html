@@ -109,6 +109,7 @@ socket.on("offer", (id, description, rtcConfig) => {
 });
 
 socket.on("inboundCandidate", (id, candidate) => {
+    console.log(candidate);
     try {
         console.log('inboundCandidate');
         inboundPeerConnection
