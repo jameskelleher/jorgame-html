@@ -109,10 +109,16 @@ socket.on("offer", (id, description, rtcConfig) => {
 });
 
 socket.on("inboundCandidate", (id, candidate) => {
-    console.log('inboundCandidate');
-    inboundPeerConnection
-        .addIceCandidate(new RTCIceCandidate(candidate))
-        .catch(e => console.log(e));
+    try {
+        console.log('inboundCandidate');
+        inboundPeerConnection
+            .addIceCandidate(new RTCIceCandidate(candidate))
+            .catch(e => console.log(e));
+
+        console.log('successfully updated inbound candidate');
+    } catch {
+        console.log('failed to update inbound candidate');
+    }
 });
 
 socket.on("outboundCandidate", (id, candidate) => {
