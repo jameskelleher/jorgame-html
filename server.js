@@ -63,7 +63,7 @@ class RtcConfigHandler {
     }).then(res => {
       console.log('updated rtcConfig');
       this.updated = Date.now();
-      this.latestRtcConfig = { iceServers: [res.data.v.iceServers] } // res.data.v;
+      this.latestRtcConfig = { iceServers: [res.data.v.iceServers] };
       return this.latestRtcConfig;
     }).catch(error => {
       console.log(error)
@@ -221,6 +221,7 @@ function addToPublicSession(socket) {
 function addToPrivateSession(socket, sessionId) {
   if (sessionId in sessions) {
     const session = sessions[sessionId];
+    console.log(session)
     if (session.players.length === 2) {
       socket.emit('sessionFull');
       return;

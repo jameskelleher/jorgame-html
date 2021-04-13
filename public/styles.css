@@ -68,7 +68,9 @@
 
 #opponentCam {
   width: 50%;
+  background-color: teal;
   padding-left: 4px;
+  align-items: flex-start;
 }
 
 video {
