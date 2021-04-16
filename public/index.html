@@ -6,9 +6,19 @@
 </head>
 
 <body>
-  <input id="gameName" type="text">
-  <button onclick="buttonClick();">Go</button> <br>
-  <a href="/public">public queue</a>
+  <form id="privateMatchForm">
+    <label for="privateMatchInput">Lobby name:</label><br>
+    <input type="text" id="privateMatchInput"><br>
+    <input type="submit" value="Go">
+  </form>
+  <br>
+  <strong>OR</strong>
+  <br><br>
+  <!-- <input id="gameName" type="text">
+  <button onclick="buttonClick();">Go</button> <br> -->
+  <a href="/public">Join the public queue</a>
+  
+  <br><br>
 
   <h3>How to join a game:</h3>
   <p>
@@ -17,12 +27,12 @@
   </p>
   <p>
     To join a private game, enter a password into the box and click "Go".
-    You'll be taken to a private game - share the URL with a friend!
+    You'll be taken to a private game - share the URL or the password with a friend!
   </p>
 
   <h3>How to play:</h3>
   <p>
-    You and your opponent both have a deck of cards numbered 1-8. 
+    You and your opponent both have a deck of cards numbered 0-8.
     Odd numbered cards are colored red, and even are green.
     Each round, you and your opponent will play a card, and whoever plays the higher card wins the round.
   </p>
@@ -34,13 +44,15 @@
 </body>
 
 <script>
-  function buttonClick() {
-    buttonElem = document.getElementById('gameName');
-    if (!buttonElem.value) {
+  const form = document.getElementById('privateMatchForm');
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const sessionName = document.getElementById('privateMatchInput');
+    if (!sessionName.value) {
       alert('please enter a room name, or join the public queue');
     }
-    window.location = `/${buttonElem.value}`;
-  }
+    window.location = `/${sessionName.value}`;
+  });
 </script>
 
 </html>
