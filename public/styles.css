@@ -45,8 +45,13 @@
   align-items: flex-start;
 }
 
+.playerCard {
+  order: 1;
+}
+
 .oppCard {
   height: 100%;
+  order: -1;
 }
 
 .inOppDeck {
@@ -104,11 +109,14 @@ video {
   position: relative;
   /* border: solid black; */
   align-items: center;
-  justify-content: space-between;
 }
 
-#spotlightCenter, #spotlightLeft, #spotlightRight {
-  height: 100%;
+.justifyCenter {
+  justify-content: center;
+}
+
+.justifySpaceBetween {
+  justify-content: space-between;
 }
 
 .inSpotlight {

@@ -5,10 +5,6 @@ const ANIM_PARAMS = {
 }
 
 const spotlightDiv = document.getElementById('spotlightDiv');
-const spotlightLeft = document.getElementById('spotlightLeft');
-const spotlightCenter = document.getElementById('spotlightCenter');
-const spotlightRight = document.getElementById('spotlightRight');
-
 
 function animatePlayerMove(element) {
   const promise1 = animateCardsInDeck(element);
@@ -39,23 +35,39 @@ function animate(element, destElem, transform, classAdd = 'inSpotlight', classRe
 }
 
 function animateToSpotlight(element) {
-  if (spotlightCenter.childElementCount === 0) {
+  if (spotlightDiv.childElementCount === 0) {
     const anim1 = animateToSpotlightCenter(element);
+    anim1.finished.then(() => {
+      spotlightDiv.classList.remove('justifySpaceBetween');
+      spotlightDiv.classList.add('justifyCenter');
+    })
     return [anim1.finished];
   } else if (element.classList.contains('playerCard')) {
-    const anim1 = animateToSpotlightLeft(spotlightCenter.children[0]);
+    const oppCardElement = spotlightDiv.children[0];
+    const anim1 = animateToSpotlightLeft(oppCardElement);
     const anim2 = animateToSpotlightRight(element);
-    return [anim1.finished, anim2.finished];
+    const finishedPromises = [anim1.finished, anim2.finished]
+    Promise.all(finishedPromises).then(() => {
+      spotlightDiv.classList.remove('justifyCenter');
+      spotlightDiv.classList.add('justifySpaceBetween');
+    })
+    return finishedPromises;
   } else {
-    const anim1 = animateToSpotlightRight(spotlightCenter.children[0]);
+    const playerCardElement = spotlightDiv.children[0]
+    const anim1 = animateToSpotlightRight(playerCardElement);
     const anim2 = animateToSpotlightLeft(element);
-    return [anim1.finished, anim2.finished];
+    const finishedPromises = [anim1.finished, anim2.finished]
+    Promise.all(finishedPromises).then(() => {
+      spotlightDiv.classList.remove('justifyCenter');
+      spotlightDiv.classList.add('justifySpaceBetween');
+    })
+    return finishedPromises;
   }
 }
 
 function animateToSpotlightCenter(element) {
   const elemRect = element.getBoundingClientRect();
-  const destElem = spotlightCenter;
+  const destElem = spotlightDiv;
   const destRect = destElem.getBoundingClientRect();
 
   const xTranslate = (destRect.x - elemRect.x) + (destRect.width / 2) - (elemRect.width / 2);
@@ -69,14 +81,17 @@ function animateToSpotlightCenter(element) {
 
 function animateToSpotlightRight(element) {
   const elemRect = element.getBoundingClientRect();
-  const destElem = spotlightRight;
+  const destElem = spotlightDiv;
   const destRect = destElem.getBoundingClientRect();
 
   const scale = destRect.height / elemRect.height;
 
-  const xCenter = elemRect.x + elemRect.width / 2;
-  const xAfterScale = xCenter - (elemRect.width / 2 * scale);
-  const xTranslate = destRect.x - xAfterScale - elemRect.width * scale;
+  const xTarget = destRect.x + destRect.width - elemRect.width * scale;
+  const xAfterScale = elemRect.x + (elemRect.width - elemRect.width * scale) / 2;
+  const xTranslate = xTarget - xAfterScale;
+  // const xCenter = elemRect.x + elemRect.width / 2;
+  // const xAfterScale = xCenter - (elemRect.width / 2 * scale);
+  // const xTranslate = destRect.x - xAfterScale - elemRect.width * scale;
 
   const yTranslate = (destRect.y - elemRect.y) + (destRect.height / 2) - (elemRect.height / 2);
 
@@ -87,7 +102,7 @@ function animateToSpotlightRight(element) {
 
 function animateToSpotlightLeft(element) {
   const elemRect = element.getBoundingClientRect();
-  const destElem = spotlightLeft;
+  const destElem = spotlightDiv;
   const destRect = destElem.getBoundingClientRect();
 
   const scale = destRect.height / elemRect.height;
@@ -104,13 +119,12 @@ function animateToSpotlightLeft(element) {
 }
 
 function animateClearSpotlight() {
-  const leftAnim = animateClearSpotlightDiv(spotlightLeft);
-  const rightAnim = animateClearSpotlightDiv(spotlightRight);
+  const leftAnim = animateClearSpotlightDiv(spotlightDiv.children[0]);
+  const rightAnim = animateClearSpotlightDiv(spotlightDiv.children[1]);
   return [leftAnim.finished, rightAnim.finished];
 }
 
-function animateClearSpotlightDiv(spotlightElem) {
-  const cardElem = spotlightElem.children[0];
+function animateClearSpotlightDiv(cardElem) {
   const elemRect = cardElem.getBoundingClientRect();
   const yTranslate = -1 * elemRect.y - elemRect.height;
   const anim = cardElem.animate({
