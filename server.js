@@ -164,8 +164,12 @@ io.on('connection', function (socket) {
     });
   });
 
-  socket.on('rtcReady', function () {
-    players[socket.id].rtcReady = true;
+  socket.on('rtcReady', function (isReady) {
+    players[socket.id].rtcReady = isReady;
+
+    if (!isReady) return;
+
+    console.log(`${socket.id} is rtcReady`);
 
     session_id = players[socket.id]['sessionId'];
 

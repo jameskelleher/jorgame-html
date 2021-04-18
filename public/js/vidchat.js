@@ -167,7 +167,7 @@ function gotStream(stream) {
     );
     clientVideoElement.srcObject = stream;
     console.log("about to emit");
-    socket.emit("rtcReady");
+    socket.emit("rtcReady", true);
 }
 
 function enableAudio() {
@@ -190,6 +190,28 @@ function updateInboundPeerConnection(candidate, attempts=5, timeout=2000) {
         console.log('successfully added inbound candidate');
     } catch {
         setTimeout(() => updateInboundPeerConnection(candidate, attempts-1), timeout);
+    }
+}
+
+function closeConnections() {
+    vidChatInitialized = false;
+    socket.emit('rtcReady', false);
+    try {
+        clientVideoElement.remove();
+        peerVideoElement.remove();
+        inboundPeerConnection.close();
+        outboundPeerConnection.close();
+
+        const vidOptionsDiv = document.getElementById('vidOptions');
+        var vidOptions = vidOptionsDiv.children;
+        
+        while (vidOptions.length > 0) {
+            vidOptions[vidOptions.length - 1].remove();
+        }
+
+        console.log('closed rtc connections');
+    } catch (e) {
+        console.log(e);
     }
 }
 
@@ -232,5 +254,3 @@ function addVidOptionsToDOM() {
     vidOptionsDiv.appendChild(videoSourceSection);
     vidOptionsDiv.appendChild(enableAudioButton);
 }
-
-

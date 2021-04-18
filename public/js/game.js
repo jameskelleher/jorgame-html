@@ -40,6 +40,8 @@ function initDeck() {
 }
 
 function tearDownGame() {
+  closeConnections();
+  
   document.getElementById('playerScore').innerText = `you: 0`;
   document.getElementById('opponentScore').innerText = `them: 0`;
 
