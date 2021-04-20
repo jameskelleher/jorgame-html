@@ -74,6 +74,7 @@
 #opponentCam {
   width: 50%;
   padding-left: 4px;
+  display: flex;
   align-items: flex-start;
 }
 
@@ -108,16 +109,15 @@ video {
   display: flex;
   position: relative;
   /* border: solid black; */
+  justify-content: space-between;
   align-items: center;
 }
 
-.justifyCenter {
-  justify-content: center;
+#spotlightDiv > :only-child {
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.justifySpaceBetween {
-  justify-content: space-between;
-}
 
 .inSpotlight {
   margin-top: 0px;

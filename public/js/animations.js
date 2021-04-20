@@ -37,30 +37,21 @@ function animate(element, destElem, transform, classAdd = 'inSpotlight', classRe
 function animateToSpotlight(element) {
   if (spotlightDiv.childElementCount === 0) {
     const anim1 = animateToSpotlightCenter(element);
-    anim1.finished.then(() => {
-      spotlightDiv.classList.remove('justifySpaceBetween');
-      spotlightDiv.classList.add('justifyCenter');
-    })
+
     return [anim1.finished];
   } else if (element.classList.contains('playerCard')) {
     const oppCardElement = spotlightDiv.children[0];
     const anim1 = animateToSpotlightLeft(oppCardElement);
     const anim2 = animateToSpotlightRight(element);
     const finishedPromises = [anim1.finished, anim2.finished]
-    Promise.all(finishedPromises).then(() => {
-      spotlightDiv.classList.remove('justifyCenter');
-      spotlightDiv.classList.add('justifySpaceBetween');
-    })
+
     return finishedPromises;
   } else {
     const playerCardElement = spotlightDiv.children[0]
     const anim1 = animateToSpotlightRight(playerCardElement);
     const anim2 = animateToSpotlightLeft(element);
     const finishedPromises = [anim1.finished, anim2.finished]
-    Promise.all(finishedPromises).then(() => {
-      spotlightDiv.classList.remove('justifyCenter');
-      spotlightDiv.classList.add('justifySpaceBetween');
-    })
+
     return finishedPromises;
   }
 }
