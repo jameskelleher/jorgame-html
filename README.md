@@ -8,7 +8,3 @@ To run:
 3. Run `node server.js`
 4. Go to http://localhost:4000/ in your browser
 5. Click the link that says "Join the public queue". Open another tab and repeat, once two clients are connected the game will start
-
-OR
-
-Go to https://quiet-chamber-25966.herokuapp.com/ to play remotely. If you create a private room you can video chat too!
